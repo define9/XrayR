@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	"dario.cat/mergo"
+	"github.com/XrayR-project/XrayR/api/sparrowpanel"
 	"github.com/r3labs/diff/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/xtls/xray-core/app/dispatcher"
@@ -188,6 +189,8 @@ func (p *Panel) Start() {
 			apiClient = v2raysocks.New(nodeConfig.ApiConfig)
 		case "GoV2Panel":
 			apiClient = gov2panel.New(nodeConfig.ApiConfig)
+		case "SparrowPanel":
+			apiClient = sparrowpanel.New(nodeConfig.ApiConfig)
 		case "BunPanel":
 			apiClient = bunpanel.New(nodeConfig.ApiConfig)
 		default:

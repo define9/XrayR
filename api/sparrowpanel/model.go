@@ -17,8 +17,7 @@ type NodeInfo struct {
 	Shadowsocks
 	Trojan
 
-	ServerPort int    `json:"serverPort"`
-	Port       uint32 `json:"port"`
+	ServerPort int `json:"serverPort"`
 }
 
 type ServerConfig struct {

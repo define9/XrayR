@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"os/exec"
 	"reflect"
 	"regexp"
 	"strconv"
@@ -20,7 +19,7 @@ import (
 	"github.com/XrayR-project/XrayR/api"
 )
 
-// APIClient create a api client to the panel.
+// APIClient create an api client to the panel.
 type APIClient struct {
 	client        *resty.Client
 	APIHost       string
@@ -32,10 +31,9 @@ type APIClient struct {
 	SpeedLimit    float64
 	DeviceLimit   int
 	LocalRuleList []api.DetectRule
-	leftPort      uint32
 }
 
-// New creat a api instance
+// New creat an api instance
 func New(apiConfig *api.Config) *APIClient {
 	client := resty.New()
 	client.SetRetryCount(3)
@@ -175,50 +173,12 @@ func (c *APIClient) GetNodeInfo() (nodeInfo *api.NodeInfo, err error) {
 		return nil, fmt.Errorf("unsupported Node type: %s", c.NodeType)
 	}
 
-	if c.leftPort != nodeInfoResponse.Port {
-		log.Printf("[change] nginx listen port: %d => %d", c.leftPort, nodeInfoResponse.Port)
-
-		if c.UpdateNginxConfig() == true {
-			c.leftPort = nodeInfoResponse.Port
-			cmd := exec.Command("service", "nginx", "restart")
-			err := cmd.Run()
-			if err != nil {
-				log.Printf("cmd.Run() failed with %s\n", err)
-			}
-			log.Println("nginx restart success")
-		}
-	}
-
 	if err != nil {
 		res, _ := json.Marshal(nodeInfoResponse)
 		return nil, fmt.Errorf("Parse node info failed: %s, \nError: %s", string(res), err)
 	}
 
 	return nodeInfo, nil
-}
-
-func (c *APIClient) UpdateNginxConfig() bool {
-	path := fmt.Sprintf("/api/v1/proxyServer/xray/getNginxConfigFile")
-
-	res, err := c.client.R().
-		SetQueryParams(map[string]string{
-			"type":   c.NodeType,
-			"nodeId": strconv.Itoa(c.NodeID),
-		}).
-		SetOutput("./nginx_conf/sparrow_nginx.conf").
-		Get(path)
-
-	if err != nil {
-		log.Printf("get nginx config file failed: %s", err)
-		return false
-	}
-
-	if res.StatusCode() != 200 {
-		log.Printf("get nginx config failed, code:%d", res.StatusCode())
-		return false
-	}
-
-	return true
 }
 
 // GetUserList will pull user form sparrow panel

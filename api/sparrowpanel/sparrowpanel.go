@@ -141,7 +141,7 @@ func (c *APIClient) parseResponse(res *resty.Response, path string, err error) (
 
 // GetNodeInfo will pull NodeInfo Config from SparrowPanel
 func (c *APIClient) GetNodeInfo() (nodeInfo *api.NodeInfo, err error) {
-	path := fmt.Sprintf("/api/v1/proxyServer/xray/nodeInfo")
+	path := fmt.Sprintf("/api/v1/proxyServer/xrayR/nodeInfo")
 
 	res, err := c.client.R().
 		SetQueryParams(map[string]string{
@@ -183,7 +183,7 @@ func (c *APIClient) GetNodeInfo() (nodeInfo *api.NodeInfo, err error) {
 
 // GetUserList will pull user form sparrow panel
 func (c *APIClient) GetUserList() (UserList *[]api.UserInfo, err error) {
-	path := "/api/v1/proxyServer/xray/users"
+	path := "/api/v1/proxyServer/xrayR/users"
 	res, err := c.client.R().
 		SetQueryParams(map[string]string{
 			"type":   c.NodeType,
@@ -219,7 +219,7 @@ func (c *APIClient) ReportNodeStatus(nodeStatus *api.NodeStatus) (err error) {
 		Disk:   nodeStatus.Disk,
 	}
 
-	path := "/api/v1/proxyServer/xray/reportNodeStatus"
+	path := "/api/v1/proxyServer/xrayR/reportNodeStatus"
 	res, err := c.client.R().
 		SetQueryParams(map[string]string{
 			"type":   c.NodeType,
@@ -245,7 +245,7 @@ func (c *APIClient) ReportNodeOnlineUsers(onlineUserList *[]api.OnlineUser) erro
 		data[i] = OnlineUser{UID: user.UID, IP: user.IP}
 	}
 	postData := &PostData{NodeType: c.NodeType, NodeId: c.NodeID, Onlines: data}
-	path := "/api/v1/proxyServer/xray/online"
+	path := "/api/v1/proxyServer/xrayR/online"
 
 	res, err := c.client.R().
 		SetHeader("Content-Type", "application/json").
@@ -272,7 +272,7 @@ func (c *APIClient) ReportUserTraffic(userTraffic *[]api.UserTraffic) error {
 		}
 	}
 	postData := &PostData{NodeType: c.NodeType, NodeId: c.NodeID, Users: data}
-	path := "/api/v1/proxyServer/xray/traffic"
+	path := "/api/v1/proxyServer/xrayR/traffic"
 
 	res, err := c.client.R().
 		SetHeader("Content-Type", "application/json").
@@ -291,7 +291,7 @@ func (c *APIClient) ReportUserTraffic(userTraffic *[]api.UserTraffic) error {
 // GetNodeRule will pull the audit rule form panel
 func (c *APIClient) GetNodeRule() (*[]api.DetectRule, error) {
 	ruleList := c.LocalRuleList
-	path := "/api/v1/proxyServer/xray/rules"
+	path := "/api/v1/proxyServer/xrayR/rules"
 
 	res, err := c.client.R().
 		SetQueryParams(map[string]string{
